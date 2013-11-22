@@ -6,7 +6,7 @@ pc.script.create('mouseWatcher', function (context) {
         this.entity = entity;
         this._watchTarget = 'watchme';
         this._watched = null;
-        this._randomDelay = 500;
+        this._randomDelay = 400;
         this._isWaiting = false;
     };
 
@@ -23,15 +23,16 @@ pc.script.create('mouseWatcher', function (context) {
         },
         update: function(delta) {
             //find the target and then point at it.
-            var component = this;
-            var target = component.getWatched();
-            
-            if (target && !component._isWaiting) {
-                component._isWaiting = true;
-                setTimeout(function() {
-                    component.entity.lookAt(target.localPosition);
-                    component._isWaiting = false;
-                }, Math.random(component._randomDelay));
+            if (!this._isWaiting) {            
+                var component = this;
+                var target = component.getWatched();
+                if (target) {
+                    component._isWaiting = true;
+                    setTimeout(function() {
+                        component.entity.lookAt(target.localPosition);
+                        component._isWaiting = false;
+                    }, Math.random() * component._randomDelay);
+                }
             }
         }
         
