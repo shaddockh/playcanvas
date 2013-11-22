@@ -21,7 +21,7 @@ pc.script.create('mouseWatcher', function (context) {
             var target = context.root.findByLabel(this._watchTarget);
             //console.log(target);
             if (target && target.length > 0) {
-                this.entity.lookAt(target[0].position);
+                this.entity.lookAt(target[0].localPosition);
             }
             
             // Get the current camera Entity
