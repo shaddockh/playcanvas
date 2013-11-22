@@ -6,6 +6,8 @@ pc.script.create('mouseLight', function (context) {
         this.entity = entity;
         this.pos = pc.math.vec3.create();
         this._customVar = 0;
+        
+        this.entity.addLabel('watchme');
 
         // Disabling the context menu stops the browser displaying a menu when
         // you right-click the page
@@ -23,6 +25,9 @@ pc.script.create('mouseLight', function (context) {
         },
         setCustomVar: function(value) {
             this._customVar = value;
+        },
+        getPosition: function() {
+            return this.pos;
         },
         onMouseMove: function (event) {
             // Get the current camera Entity

@@ -3,6 +3,7 @@ pc.script.create('mouseWatcher', function (context) {
     //Component will watch the mouse and turn the entity to look at the mouse
     var MouseHandler = function (entity) {
         this.entity = entity;
+        this._watchTarget = 'watchme';
         this.targetPosition = pc.math.vec3.create();
 
 
@@ -14,16 +15,25 @@ pc.script.create('mouseWatcher', function (context) {
 
     MouseHandler.prototype = {
         onMouseMove: function (event) {
+            
+            //find the mouseLight and then point at it.
+            var target = null;
+            var target = context.root.findByLabel(this._watchTarget);
+            console.log(target);
+            if (target) {
+                this.entity.lookAt(target.mouseLight.getPosition());
+            }
+            
             // Get the current camera Entity
-            var cameraEntity = context.systems.camera.current
+            //var cameraEntity = context.systems.camera.current
 
             // Use the camera component's screenToWorld function to convert the
             // position of the mouse into a position in 3D space
-            var depth = 10;
-            cameraEntity.camera.screenToWorld(event.x, event.y, depth, this.targetPosition);
+            //var depth = 10;
+            //cameraEntity.camera.screenToWorld(event.x, event.y, depth, this.targetPosition);
 
             //TODO: move the tracking of the mouse in world space to a single entity at the root
-            this.entity.lookAt(this.targetPosition,  pc.math.vec3.create(0, -1, 0));
+            //this.entity.lookAt(this.targetPosition,  pc.math.vec3.create(0, -1, 0));
         }
     };
 

@@ -1,3 +1,4 @@
+/* global: pc */
 pc.script.create('spinner', function (context) {
     // Creates a new Spinner instance
     var Spinner = function (entity) {
