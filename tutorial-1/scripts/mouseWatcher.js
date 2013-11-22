@@ -5,7 +5,8 @@ pc.script.create('mouseWatcher', function (context) {
     var WatchTarget = function (entity) {
         this.entity = entity;
         this._watchTarget = 'watchme';
-        this._wathced = null;
+        this._watched = null;
+        this._randomDelay = 300;
     };
 
     WatchTarget.prototype = {
@@ -20,12 +21,16 @@ pc.script.create('mouseWatcher', function (context) {
             return this._watched;
         },
         update: function(delta) {
-            //find the mouseLight and then point at it.
+            //find the target and then point at it.
             var target = this.getWatched();
+            var entity = this.entity;
             if (target) {
-                this.entity.lookAt(target.localPosition);
+                setTimeout(function() {
+                    entity.lookAt(target.localPosition);
+                }, Math.random(this._randomDelay));
             }
         }
+        
     };
 
     return WatchTarget;
