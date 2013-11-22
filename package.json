@@ -1,0 +1,22 @@
+{
+  "name": "playcanvas",
+  "version": "0.0.1",
+  "description": "Playcanvas components and code",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shaddockh/playcanvas.git"
+  },
+  "author": "T. Shaddock Heath",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shaddockh/playcanvas/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-yuidoc": "~0.5.0"
+  }
+}
