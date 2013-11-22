@@ -19,9 +19,9 @@ pc.script.create('mouseWatcher', function (context) {
             //find the mouseLight and then point at it.
             var target = null;
             var target = context.root.findByLabel(this._watchTarget);
-            console.log(target);
-            if (target) {
-                this.entity.lookAt(target.mouseLight.getPosition());
+            //console.log(target);
+            if (target && target.length > 0) {
+                this.entity.lookAt(target[0].position);
             }
             
             // Get the current camera Entity
