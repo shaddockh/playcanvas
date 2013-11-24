@@ -27,6 +27,7 @@ pc.script.create('LanderPlayer', function (context) {
 
         this.thrust = pc.math.vec3.create(); //for temporary use
         this.resetting = false;
+        this.gameOver = false;
 
 
         this.isThrusting = false;
@@ -86,7 +87,7 @@ pc.script.create('LanderPlayer', function (context) {
          * @param {number} delta The amount of time in seconds since last update
          */
         update: function (delta) {
-            if (!this.resetting) {
+            if (!this.gameOver) {
                 if (context.controller.isPressed('thrust')) {
                     this.startThrusting();
                 } else {
@@ -126,6 +127,7 @@ pc.script.create('LanderPlayer', function (context) {
                     this.entity.rigidbody.linearVelocity = pc.math.vec3.zero;
                     this.entity.rigidbody.angularVelocity = pc.math.vec3.zero;
                     this.resetting = false;
+                    this.gameOver = false;
                     this.ui.script.send('LanderUI','setVisibility', false);
                 }.bind(this), immediate ? 0 : 2000);
             }
@@ -133,10 +135,11 @@ pc.script.create('LanderPlayer', function (context) {
         },
 
         playerDied: function() {
-            if (!this.resetting) {
+            if (!this.gameOver) {
                 this.stopThrusting();
+                this.gameOver = true;
                 this.ui.script.send('LanderUI','showGameOver');
-                this.reset();
+                //this.reset();
             }
         },
 
@@ -204,24 +207,13 @@ pc.script.create('LanderPlayer', function (context) {
             }
         },
 
-        /**
-         *
-         * @method onTriggerEnter
-         * @param other
-         */
-        onTriggerEnter: function(other) {
-            if (!this.resetting && other.name === 'void') {
-                console.log('trigger enter', other);
-                this.reset();
-            }
-        },
 
         /**
          * Blow up the entity
          * @method explode
          */
         explode: function() {
-            if (!this.resetting) {
+            if (!this.gameOver) {
                 this.stopThrusting();
                 this.entity.audiosource.play('explode');
                 this.playerDied();

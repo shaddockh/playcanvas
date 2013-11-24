@@ -5,6 +5,15 @@
  */
 pc.script.create('LanderUI', function (context) {
 
+
+    function buildDiv(styles) {
+
+        var div = document.createElement('div');
+        for (var style in styles) {
+            div.style[style] = styles[style];
+        }
+        return div;
+    }
     /**
      * Description
      *
@@ -23,41 +32,75 @@ pc.script.create('LanderUI', function (context) {
          */
         initialize: function () {
 
-// Create a div centred inside the main canvas
-            var div = document.createElement('div');
-            div.style.position = 'absolute';
-            div.style.width = '500px';
-            div.style.top = '50%';
-            div.style.left = '50%';
-            div.style.marginLeft = '-250px';
-            div.style.textAlign = 'center';
-            div.style.color = 'white';
-            div.style.fontSize = 'xx-large';
-            div.style.visibility = 'hidden';
+            var container = document.getElementById('application-container');
+
+            // Create a div centered inside the main canvas
+            var div = buildDiv({
+               position: 'absolute',
+               width: '500px',
+               top: '50%',
+               left: '50%',
+               marginLeft: '-250px',
+               textAlign: 'center',
+               color: 'white',
+               fontSize: 'xx-large',
+               visibility: 'hidden'
+            });
 
             // Grab the div that encloses PlayCanvas' canvas element
-            var container = document.getElementById('application-container');
             container.appendChild(div);
-
             this.div = div;
+
+            var subDiv = buildDiv({
+                position: 'absolute',
+                width: '500px',
+                top: '60%',
+                left: '50%',
+                marginLeft: '-250px',
+                textAlign: 'center',
+                color: 'white',
+                fontSize: 'x-large',
+                visibility: 'hidden'
+                }
+            );
+
+            container.appendChild(subDiv);
+            this.subtextDiv = subDiv;
+
 
             // Set some default state on the UI element
             this.setText('GAME OVER');
+            this.setSubText('');
             this.setVisibility(false);
         },
 
         // Some utility functions that can be called from other game scripts
         setVisibility: function (visible) {
             this.div.style.visibility = visible ? 'visible' : 'hidden';
+            this.subtextDiv.style.visibility = visible ? 'visible' : 'hidden';
+
+            if (!visible) {
+                this.setText('');
+                this.setSubText('');
+            }
+
         },
 
         setText: function (message) {
             this.div.innerHTML = message;
         },
 
+        setSubText: function(message) {
+            this.subtextDiv.innerHTML = message;
+        },
+
         showGameOver: function() {
             this.setText('GAME OVER');
             this.setVisibility(true);
+
+            setTimeout(function(){
+                this.setSubText('Press "R" to play again.');
+            }.bind(this), 2000);
         },
 
 
