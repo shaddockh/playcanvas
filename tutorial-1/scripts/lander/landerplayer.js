@@ -78,6 +78,7 @@ pc.script.create('LanderPlayer', function (context) {
             this.light.light.enable = false;
 
             this.ui = context.root.findByName('Camera');
+
         },
 
 
