@@ -5,6 +5,10 @@
  */
 pc.script.create('LanderPlayer', function (context) {
 
+
+    var UI = null;
+
+
     /**
      * Lunar Lander player controller
      *
@@ -63,12 +67,16 @@ pc.script.create('LanderPlayer', function (context) {
             context.controller.registerKeys('right', [pc.input.KEY_RIGHT, pc.input.KEY_D, pc.input.KEY_L]);
             context.controller.registerKeys('reset', [pc.input.KEY_R]);
 
+            context.controller.registerKeys('UI', [pc.input.KEY_0]);
+
 
             context.systems.rigidbody.on('contact', this.onContact, this);  //bind the rigidbody oncontact to the onContact event
 
             this.flame = this.entity.findByName('flame');
             this.light = this.entity.findByName('light');
             this.light.light.enable = false;
+
+            this.ui = context.root.findByName('Camera');
         },
 
 
@@ -118,26 +126,36 @@ pc.script.create('LanderPlayer', function (context) {
                     this.entity.rigidbody.linearVelocity = pc.math.vec3.zero;
                     this.entity.rigidbody.angularVelocity = pc.math.vec3.zero;
                     this.resetting = false;
+                    this.ui.script.send('LanderUI','setVisibility', false);
                 }.bind(this), immediate ? 0 : 2000);
             }
 
         },
+
+        playerDied: function() {
+            if (!this.resetting) {
+                this.stopThrusting();
+                this.ui.script.send('LanderUI','showGameOver');
+                this.reset();
+            }
+        },
+
 
 
         /**
          * @method startThrusting
          */
         startThrusting: function() {
-                pc.math.vec3.scale(this.entity.up, THRUST_IMPULSE, this.thrust);
-                this.entity.rigidbody.activate(); //may become inactive if not used for a while
-                this.entity.rigidbody.applyImpulse(this.thrust);
+            pc.math.vec3.scale(this.entity.up, THRUST_IMPULSE, this.thrust);
+            this.entity.rigidbody.activate(); //may become inactive if not used for a while
+            this.entity.rigidbody.applyImpulse(this.thrust);
 
-                if (!this.isThrusting) {
-                    this.flame.model.setVisible(true);
-                    this.entity.audiosource.play('thruster');
-                    this.light.light.enable = true;
-                    this.isThrusting = true;
-                }
+            if (!this.isThrusting) {
+                this.flame.model.setVisible(true);
+                this.entity.audiosource.play('thruster');
+                this.light.light.enable = true;
+                this.isThrusting = true;
+            }
         },
 
         /**
@@ -206,7 +224,7 @@ pc.script.create('LanderPlayer', function (context) {
             if (!this.resetting) {
                 this.stopThrusting();
                 this.entity.audiosource.play('explode');
-                this.reset();
+                this.playerDied();
             }
         }
     };
