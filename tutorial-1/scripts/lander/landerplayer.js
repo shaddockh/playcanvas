@@ -52,14 +52,14 @@ pc.script.create('LanderPlayer', function (context) {
      * @property {number} TORQUE_IMPULSE
      * @default 40
      */
-    var TORQUE_IMPULSE = 40;
+    var TORQUE_IMPULSE = 5;
 
     /**
      * Max velocity allowed for successful landing
      * @property {number} MAX_VELOCITY
      * @default 3
      */
-    var MAX_VELOCITY = 0.5;
+    var MAX_VELOCITY = 1.5;
 
     LanderPlayerComponent.prototype = {
         /**
@@ -119,6 +119,7 @@ pc.script.create('LanderPlayer', function (context) {
                         this.entity.rigidbody.activate();
                         this.entity.rigidbody.applyTorqueImpulse(0,0,-TORQUE_IMPULSE);
                     }
+                    this.ui.script.send('LanderUI','showSpeed', this.getSpeed());
                     break;
 
 
@@ -157,6 +158,13 @@ pc.script.create('LanderPlayer', function (context) {
             if (this.gameState == states.inGame) {
                 this.stopThrusting();
                 this.ui.script.send('LanderUI','showGameOver');
+                this.gameState = states.gameOver;
+            }
+        },
+        playerWon: function() {
+            if (this.gameState == states.inGame) {
+                this.stopThrusting();
+                this.ui.script.send('LanderUI','showPlayerWin');
                 this.gameState = states.gameOver;
             }
         },
@@ -213,10 +221,11 @@ pc.script.create('LanderPlayer', function (context) {
                 if (entity) {
                     if (object.getName() === 'platform') {
                         //we landed on the platform
-                        speed = pc.math.vec3.length(this.entity.rigidbody.linearVelocity);
-
-                        if (speed > MAX_VELOCITY) {
+                        if (this.getSpeed() > MAX_VELOCITY) {
                             this.explode();
+                            //alert('speed was ' + speed);
+                        } else {
+                            this.playerWon();
                         }
                     } else {
                         this.explode();
@@ -225,6 +234,9 @@ pc.script.create('LanderPlayer', function (context) {
             }
         },
 
+        getSpeed: function() {
+            return pc.math.vec3.length(this.entity.rigidbody.linearVelocity);
+        },
 
         /**
          * Blow up the entity

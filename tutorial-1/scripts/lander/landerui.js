@@ -41,6 +41,14 @@ pc.script.create('LanderUI', function (context) {
             'color':'gray',
             'font-size': 'x-large'
         },
+        '.speed': {
+            position: 'absolute',
+            'margin-right':'10%',
+            color: 'white',
+            bottom:0,
+            'text-align':'left',
+            width: '100%'
+        },
         '.gameover,.subtext': {
             position: 'absolute',
             width: '100%',
@@ -114,15 +122,15 @@ pc.script.create('LanderUI', function (context) {
         initialize: function () {
 
 
+            this.container = document.getElementById('application-container');
             // Grab the div that encloses PlayCanvas' canvas element
-            var container = document.getElementById('application-container');
 
             var div = buildDiv({className: 'gameover'});
-            container.appendChild(div);
+            this.container.appendChild(div);
             this.div = div;
 
             var subDiv = buildDiv({className: 'subtext'});
-            container.appendChild(subDiv);
+            this.container.appendChild(subDiv);
             this.subtextDiv = subDiv;
 
 
@@ -154,17 +162,27 @@ pc.script.create('LanderUI', function (context) {
         showGameOver: function() {
             this.setText('GAME OVER');
             this.setVisibility(true);
+            this.subtextDiv.style.visibility = 'hidden';
 
             setTimeout(function(){
                 this.setSubText('Press "R" to play again.');
             }.bind(this), 2000);
         },
 
+        showPlayerWin: function() {
+            this.setText('YOU LANDED SAFELY!!');
+            this.setVisibility(true);
+            this.subtextDiv.style.visibility = 'hidden';
+
+            setTimeout(function(){
+                this.setSubText('Press "R" to play again.');
+            }.bind(this), 2000);
+        },
 
         hideMainMenu: function() {
             document.getElementById('main-menu').remove();
         },
-        showMainMenu: function(callback) {
+        showMainMenu: function() {
            var template = [
             '<div class="title center">Lander Game</div>',
             '<div class="instructions center">',
@@ -182,6 +200,16 @@ pc.script.create('LanderUI', function (context) {
 
             var container = document.getElementById('application-container');
             container.appendChild(screen);
+        },
+
+        showSpeed: function(speed) {
+
+            if (!this.speedDiv) {
+               var speedDiv = buildDiv({className: 'speed', id:'divSpeed'});
+               this.container.appendChild(speedDiv);
+                this.speedDiv = speedDiv;
+            }
+            this.speedDiv.innerHTML = 'Speed: ' + Math.round(speed * 100);
         },
 
         /**
