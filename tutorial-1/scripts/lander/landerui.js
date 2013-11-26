@@ -165,6 +165,7 @@ pc.script.create('LanderUI', function (context) {
             this.subtextDiv.style.visibility = 'hidden';
 
             setTimeout(function(){
+                this.subtextDiv.style.visibility = 'visible';
                 this.setSubText('Press "R" to play again.');
             }.bind(this), 2000);
         },
@@ -175,6 +176,7 @@ pc.script.create('LanderUI', function (context) {
             this.subtextDiv.style.visibility = 'hidden';
 
             setTimeout(function(){
+                this.subtextDiv.style.visibility = 'visible';
                 this.setSubText('Press "R" to play again.');
             }.bind(this), 2000);
         },
