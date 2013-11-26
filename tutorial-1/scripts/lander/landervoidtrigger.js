@@ -22,15 +22,16 @@ pc.script.create('LanderVoidTrigger', function (context) {
          * @method initialize
          */
         initialize: function () {
-            //why should we have to intercept collisionstart in order for the triggerenter event to fire?
-            this.entity.collision.on('collisionstart', function() { }, this);
-
             this.entity.collision.on('triggerenter', this.onTriggerEnter, this);
         },
 
+        /**
+         * player has been lost in the void.  call the playerDied method
+         * @param player
+         */
         onTriggerEnter: function(player) {
             player.script.send('LanderPlayer', 'playerDied');
-        } ,
+        }
     };
 
     return LanderVoidTriggerComponent;

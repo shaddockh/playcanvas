@@ -8,6 +8,13 @@ pc.script.create('LanderPlayer', function (context) {
 
     var UI = null;
 
+    var states = {
+        mainMenu: 0,
+        resetting: 1,
+        inGame: 2,
+        gameOver: 3
+    };
+
 
     /**
      * Lunar Lander player controller
@@ -26,11 +33,11 @@ pc.script.create('LanderPlayer', function (context) {
         this.entity = entity;
 
         this.thrust = pc.math.vec3.create(); //for temporary use
-        this.resetting = false;
-        this.gameOver = false;
-
 
         this.isThrusting = false;
+
+
+        this.gameState = states.mainMenu;
     };
 
     /**
@@ -68,8 +75,7 @@ pc.script.create('LanderPlayer', function (context) {
             context.controller.registerKeys('right', [pc.input.KEY_RIGHT, pc.input.KEY_D, pc.input.KEY_L]);
             context.controller.registerKeys('reset', [pc.input.KEY_R]);
 
-            context.controller.registerKeys('UI', [pc.input.KEY_0]);
-
+            context.controller.registerKeys('startGame', [pc.input.KEY_SPACE]);
 
             context.systems.rigidbody.on('contact', this.onContact, this);  //bind the rigidbody oncontact to the onContact event
 
@@ -78,7 +84,7 @@ pc.script.create('LanderPlayer', function (context) {
             this.light.light.enable = false;
 
             this.ui = context.root.findByName('Camera');
-
+            this.ui.script.send('LanderUI','showMainMenu');
         },
 
 
@@ -88,26 +94,40 @@ pc.script.create('LanderPlayer', function (context) {
          * @param {number} delta The amount of time in seconds since last update
          */
         update: function (delta) {
-            if (!this.gameOver) {
-                if (context.controller.isPressed('thrust')) {
-                    this.startThrusting();
-                } else {
-                    this.stopThrusting();
-                }
+            switch (this.gameState) {
+                case states.mainMenu:
+                    if (context.controller.wasPressed('startGame')) {
+                        this.ui.script.send('LanderUI','hideMainMenu');
+                        this.reset(true);
+                    }
+                    break;
 
-                if (context.controller.isPressed('left')) {
-                    this.entity.rigidbody.activate();
-                    this.entity.rigidbody.applyTorqueImpulse(0,0,TORQUE_IMPULSE);
-                }
+                case states.inGame:
 
-                if (context.controller.isPressed('right')) {
-                    this.entity.rigidbody.activate();
-                    this.entity.rigidbody.applyTorqueImpulse(0,0,-TORQUE_IMPULSE);
-                }
+                    if (context.controller.isPressed('thrust')) {
+                        this.startThrusting();
+                    } else {
+                        this.stopThrusting();
+                    }
 
-            }
-            if (context.controller.wasPressed('reset')) {
-                this.reset(true);
+                    if (context.controller.isPressed('left')) {
+                        this.entity.rigidbody.activate();
+                        this.entity.rigidbody.applyTorqueImpulse(0,0,TORQUE_IMPULSE);
+                    }
+
+                    if (context.controller.isPressed('right')) {
+                        this.entity.rigidbody.activate();
+                        this.entity.rigidbody.applyTorqueImpulse(0,0,-TORQUE_IMPULSE);
+                    }
+                    break;
+
+
+                case states.gameOver:
+                    if (context.controller.wasPressed('reset')) {
+                        this.reset(true);
+                    }
+                    break;
+
             }
         },
 
@@ -118,8 +138,8 @@ pc.script.create('LanderPlayer', function (context) {
          */
         reset: function(immediate) {
 
-            if (!this.resetting) {
-                this.resetting = true;
+            if (!(this.gameState == states.resetting)) {
+                this.gameState = states.resetting;
                 this.stopThrusting();
                 setTimeout(function() {
                     this.entity.setPosition(0,30,0);
@@ -127,20 +147,17 @@ pc.script.create('LanderPlayer', function (context) {
                     this.entity.rigidbody.syncEntityToBody(); //used when running dynamic.  Rigid body needs to sync up with any entity changes
                     this.entity.rigidbody.linearVelocity = pc.math.vec3.zero;
                     this.entity.rigidbody.angularVelocity = pc.math.vec3.zero;
-                    this.resetting = false;
-                    this.gameOver = false;
                     this.ui.script.send('LanderUI','setVisibility', false);
+                    this.gameState = states.inGame;
                 }.bind(this), immediate ? 0 : 2000);
             }
-
         },
 
         playerDied: function() {
-            if (!this.gameOver) {
+            if (this.gameState == states.inGame) {
                 this.stopThrusting();
-                this.gameOver = true;
                 this.ui.script.send('LanderUI','showGameOver');
-                //this.reset();
+                this.gameState = states.gameOver;
             }
         },
 
@@ -172,7 +189,6 @@ pc.script.create('LanderPlayer', function (context) {
                 this.light.light.enable = false;
                 this.isThrusting = false;
             }
-
         },
 
         /**
@@ -181,29 +197,30 @@ pc.script.create('LanderPlayer', function (context) {
          * @method onContact
          */
         onContact: function(result) {
-            var speed;
-            var entity,
-                object;
+            if (this.gameState == states.inGame) {
+                var speed;
+                var entity,
+                    object;
 
-            if (result.a === this.entity) {
-                entity = result.a;
-                object = result.b;
-            } else if (result.b === this.entity) {
-                entity = result.b;
-                object = result.a;
-            }
+                if (result.a === this.entity) {
+                    entity = result.a;
+                    object = result.b;
+                } else if (result.b === this.entity) {
+                    entity = result.b;
+                    object = result.a;
+                }
 
+                if (entity) {
+                    if (object.getName() === 'platform') {
+                        //we landed on the platform
+                        speed = pc.math.vec3.length(this.entity.rigidbody.linearVelocity);
 
-            if (entity) {
-                if (object.getName() === 'platform') {
-                    //we landed on the platform
-                    speed = pc.math.vec3.length(this.entity.rigidbody.linearVelocity);
-
-                    if (speed > MAX_VELOCITY) {
+                        if (speed > MAX_VELOCITY) {
+                            this.explode();
+                        }
+                    } else {
                         this.explode();
                     }
-                } else {
-                    this.explode();
                 }
             }
         },
@@ -214,7 +231,7 @@ pc.script.create('LanderPlayer', function (context) {
          * @method explode
          */
         explode: function() {
-            if (!this.gameOver) {
+            if (this.gameState == states.inGame) {
                 this.stopThrusting();
                 this.entity.audiosource.play('explode');
                 this.playerDied();

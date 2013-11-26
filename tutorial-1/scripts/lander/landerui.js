@@ -11,6 +11,36 @@ pc.script.create('LanderUI', function (context) {
 
         '#application-container div': {
         },
+        '.fullscreen-overlay': {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            top: 0
+        },
+        '.center':{
+           width: '100%',
+           position: 'relative',
+           'text-align':'center'
+        },
+        '.title': {
+            top: '5%',
+            color: 'white',
+            'font-size': 'xx-large'
+        },
+        '.instructions': {
+           color: 'lime',
+           'font-size':'large',
+            top:'20%'
+        },
+        '.instructions ul': {
+            'list-style-type':'none',
+            'padding-left':0
+        },
+        '.subtitle': {
+            top: '35%',
+            'color':'gray',
+            'font-size': 'x-large'
+        },
         '.gameover,.subtext': {
             position: 'absolute',
             width: '100%',
@@ -28,9 +58,6 @@ pc.script.create('LanderUI', function (context) {
             top: '60%',
             'font-size': 'x-large'
         }
-
-
-
     };
 
 
@@ -47,7 +74,6 @@ pc.script.create('LanderUI', function (context) {
                 block.push('\t' + attribute + ': ' + curStyle[attribute]  + ';');
             }
             block.push('}');
-            block.push();
         }
 
         styleBlock.innerHTML = block.join('\n');
@@ -64,7 +90,7 @@ pc.script.create('LanderUI', function (context) {
         attributes = attributes || {};
         var div = document.createElement('div');
         for (var attr in attributes) {
-           div[attr] = attributes[attr];
+            div[attr] = attributes[attr];
         }
         return div;
     }
@@ -115,7 +141,6 @@ pc.script.create('LanderUI', function (context) {
                 this.setText('');
                 this.setSubText('');
             }
-
         },
 
         setText: function (message) {
@@ -136,6 +161,28 @@ pc.script.create('LanderUI', function (context) {
         },
 
 
+        hideMainMenu: function() {
+            document.getElementById('main-menu').remove();
+        },
+        showMainMenu: function(callback) {
+           var template = [
+            '<div class="title center">Lander Game</div>',
+            '<div class="instructions center">',
+            '   <ul>',
+            '       <li>Thrust - [Space]</li>',
+            '       <li>Turn Left - Left, H, or A</li>',
+            '       <li>Turn Right - Right, L, or D</li>',
+            '   </ul>',
+            '</div>',
+            '<div class="subtitle center">Press [space] key to begin.</div>'
+           ].join('\n');
+
+           var screen = buildDiv({className: 'fullscreen-overlay', id: 'main-menu'});
+           screen.innerHTML = template;
+
+            var container = document.getElementById('application-container');
+            container.appendChild(screen);
+        },
 
         /**
          * Called every frame
