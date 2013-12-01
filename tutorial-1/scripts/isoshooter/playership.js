@@ -1,12 +1,12 @@
 /* global: pc */
 
 /**
- * @module components
+ * @module isoshooter-components
  */
 pc.script.create('playership', function (context) {
 
     var X = 0, Y = 1, Z = 2;
-    var SPEED = 3.0;
+    var SPEED = 4.0;
 
     var MAX_LEFT = -6.0, MAX_RIGHT = 6.0,
         MAX_TOP = 9.0, MAX_BOTTOM = 2.0;
@@ -14,7 +14,7 @@ pc.script.create('playership', function (context) {
     var FORWARD_VELOCITY = 3;
 
     /**
-     * Description
+     * Player ship component
      *
      * @class PlayerShip
      * @param entity

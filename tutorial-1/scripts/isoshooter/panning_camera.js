@@ -1,18 +1,12 @@
 /* global: pc */
 
 /**
- * @module components
+ * @module isoshooter-components
  */
 pc.script.create('PanningCamera', function (context) {
 
-
-
-    // Y - 1 -> 9
-    // X - -6 -> 6
-
-    var SPEED = 2;
     /**
-     * Will pan the camera
+     * Will pan the camera following the player entity
      *
      * @class PanningCamera
      * @param entity
@@ -56,10 +50,6 @@ pc.script.create('PanningCamera', function (context) {
             pos[0] = playerPos[0];
             this.entity.setPosition(pos);
 
-            //var localPos = this.entity.getLocalPosition();
-            //localPos[0] += delta * SPEED;
-            //this.entity.setLocalPosition(localPos);
-
 
             if (context.controller.isPressed('up')) {
                 this.player.script.send('playership','moveUp',delta);
@@ -73,18 +63,6 @@ pc.script.create('PanningCamera', function (context) {
             if (context.controller.isPressed('right')) {
                 this.player.script.send('playership', 'moveRight',delta);
             }
-
-            /*
-            if (context.controller.isPressed('left')) {
-                this.entity.rigidbody.activate();
-                this.entity.rigidbody.applyTorqueImpulse(0,0,TORQUE_IMPULSE);
-            }
-
-            if (context.controller.isPressed('right')) {
-                this.entity.rigidbody.activate();
-                this.entity.rigidbody.applyTorqueImpulse(0,0,-TORQUE_IMPULSE);
-            }
-            */
         }
     };
 
