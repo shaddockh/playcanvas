@@ -50,9 +50,15 @@ pc.script.create('PanningCamera', function (context) {
          * @param {number} delta The amount of time in seconds since last update
          */
         update: function (delta) {
-            var localPos = this.entity.getLocalPosition();
-            localPos[0] += delta * SPEED;
-            this.entity.setLocalPosition(localPos);
+
+            var playerPos = this.player.getPosition();
+            var pos = this.entity.getPosition();
+            pos[0] = playerPos[0];
+            this.entity.setPosition(pos);
+
+            //var localPos = this.entity.getLocalPosition();
+            //localPos[0] += delta * SPEED;
+            //this.entity.setLocalPosition(localPos);
 
 
             if (context.controller.isPressed('up')) {
