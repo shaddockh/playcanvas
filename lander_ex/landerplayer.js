@@ -1,7 +1,7 @@
 /* global: pc */
 
 /**
- * @module components-lander
+ * @module components-lander_ex
  */
 pc.script.create('LanderPlayer', function (context) {
 

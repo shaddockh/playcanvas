@@ -1,7 +1,7 @@
 /* global: pc */
 
 /**
- * @module components
+ * @module components-lander_ex
  */
 pc.script.create('LanderVoidTrigger', function (context) {
 
