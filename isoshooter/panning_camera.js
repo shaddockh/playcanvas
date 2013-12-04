@@ -1,7 +1,8 @@
 /* global: pc */
 
 /**
- * @module isoshooter-components
+ * @module isoshooter
+ * @namespace isoshooter
  */
 pc.script.create('PanningCamera', function (context) {
 
@@ -23,6 +24,7 @@ pc.script.create('PanningCamera', function (context) {
          */
         initialize: function () {
             this.player = context.root.findByName('player');
+            this.playerStartPos = this.player.getPosition();
             this.bindKeys();
         },
 
@@ -34,6 +36,7 @@ pc.script.create('PanningCamera', function (context) {
             context.controller.registerKeys('left', [pc.input.KEY_LEFT, pc.input.KEY_A, pc.input.KEY_Q, pc.input.KEY_H]);
             context.controller.registerKeys('right', [pc.input.KEY_RIGHT, pc.input.KEY_D, pc.input.KEY_L]);
             context.controller.registerKeys('reset', [pc.input.KEY_R]);
+            context.controller.registerKeys('fire', [pc.input.KEY_SPACE]);
 
             context.controller.registerKeys('startGame', [pc.input.KEY_SPACE]);
         },
@@ -62,6 +65,13 @@ pc.script.create('PanningCamera', function (context) {
             }
             if (context.controller.isPressed('right')) {
                 this.player.script.send('playership', 'moveRight',delta);
+            }
+            if (context.controller.wasPressed('fire')) {
+                this.player.script.send('playership', 'fire', delta);
+            }
+
+            if (context.controller.wasPressed('reset')) {
+
             }
         }
     };

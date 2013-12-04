@@ -1,7 +1,8 @@
 /* global: pc */
 
 /**
- * @module components-lander_ex
+ * @module lander_ex
+ * @namespace lander_ex
  */
 pc.script.create('LanderCamera', function (context) {
 

@@ -1,7 +1,8 @@
 /* global: pc */
 
 /**
- * @module components-lander_ex
+ * @module lander_ex
+ * @namespace lander_ex
  */
 pc.script.create('LanderUI', function (context) {
 
@@ -89,11 +90,6 @@ pc.script.create('LanderUI', function (context) {
     })(style);
 
 
-    /**
-     * utility function to build a div with specific attributes
-     * @param attributes
-     * @returns {HTMLElement}
-     */
     function buildDiv(attributes) {
         attributes = attributes || {};
         var div = document.createElement('div');
@@ -141,6 +137,12 @@ pc.script.create('LanderUI', function (context) {
         },
 
         // Some utility functions that can be called from other game scripts
+        /**
+         * set whether this is visible
+         * TODO: need to refactor to different ui
+         * @method setVisibility
+         * @param {boolean} visible
+         */
         setVisibility: function (visible) {
             this.div.style.visibility = visible ? 'visible' : 'hidden';
             this.subtextDiv.style.visibility = visible ? 'visible' : 'hidden';
@@ -151,6 +153,7 @@ pc.script.create('LanderUI', function (context) {
             }
         },
 
+
         setText: function (message) {
             this.div.innerHTML = message;
         },
@@ -159,6 +162,10 @@ pc.script.create('LanderUI', function (context) {
             this.subtextDiv.innerHTML = message;
         },
 
+        /**
+         * Show the game over screen
+         * @method showGameOver
+         */
         showGameOver: function() {
             this.setText('GAME OVER');
             this.setVisibility(true);
@@ -170,6 +177,10 @@ pc.script.create('LanderUI', function (context) {
             }.bind(this), 2000);
         },
 
+        /**
+         * Show the player win screen
+         * @method showPlayerWin
+         */
         showPlayerWin: function() {
             this.setText('YOU LANDED SAFELY!!');
             this.setVisibility(true);
@@ -181,9 +192,18 @@ pc.script.create('LanderUI', function (context) {
             }.bind(this), 2000);
         },
 
+        /**
+         * Hide the main menu
+         * @method hideMainMenu
+         */
         hideMainMenu: function() {
             document.getElementById('main-menu').remove();
         },
+
+        /**
+         * Show the main menu
+         * @method showMainMenu
+         */
         showMainMenu: function() {
            var template = [
             '<div class="title center">Lander Game</div>',
@@ -204,6 +224,11 @@ pc.script.create('LanderUI', function (context) {
             container.appendChild(screen);
         },
 
+        /**
+         * Show and update the speed ui
+         * @method showSpeed
+         * @param {number} speed
+         */
         showSpeed: function(speed) {
 
             if (!this.speedDiv) {

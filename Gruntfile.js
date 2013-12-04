@@ -8,7 +8,10 @@ module.exports = function(grunt) {
                 version: '<%= pkg.version %>',
                 url: '<%= pkg.homepage %>',
                 options: {
-                    paths: 'tutorial-1/',
+                    paths:['tutorial-1/',
+                        'lander_ex/',
+                        'isoshooter/'
+                    ],
                     //themedir: 'path/to/custom/theme/',
                     outdir: 'docs'
                 }
