@@ -3,7 +3,10 @@
         "module": true,
         "define": true,
         "requirejs": true,
-        "require": true
+        "require": true,
+
+        "pc":true,
+        "console":true
     },
     "browser": true,
     "bitwise": true,

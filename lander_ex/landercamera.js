@@ -6,38 +6,37 @@
  */
 pc.script.create('LanderCamera', function (context) {
 
+  /**
+   * Description
+   *
+   * @class LanderCamera
+   * @param entity
+   * @constructor
+   */
+  var LanderCameraComponent = function (entity) {
+    this.entity = entity;
+  };
+
+  LanderCameraComponent.prototype = {
     /**
-     * Description
-     *
-     * @class LanderCamera
-     * @param entity
-     * @constructor
+     * Called once after all resources are loaded and before the first update
+     * @method initialize
      */
-    var LanderCameraComponent = function (entity) {
-        this.entity = entity;
-    };
+    initialize: function () {
+      this.player = context.root.findByName('player');
+    },
 
-    LanderCameraComponent.prototype = {
-        /**
-         * Called once after all resources are loaded and before the first update
-         * @method initialize
-         */
-        initialize: function () {
-            this.player = context.root.findByName('player');
-        },
+    /**
+     * Called every frame
+     * @method update
+     * @param {number} delta The amount of time in seconds since last update
+     */
+    update: function (delta) {
+      this.entity.lookAt(this.player.getPosition());
 
+    }
 
-        /**
-         * Called every frame
-         * @method update
-         * @param {number} delta The amount of time in seconds since last update
-         */
-        update: function (delta) {
-            this.entity.lookAt(this.player.getPosition());
+  };
 
-        }
-
-    };
-
-    return LanderCameraComponent;
+  return LanderCameraComponent;
 });

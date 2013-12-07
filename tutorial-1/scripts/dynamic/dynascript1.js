@@ -5,49 +5,48 @@
  */
 pc.script.create('Dynascript1', function (context) {
 
+  function getScriptConfig(entity, name) {}
+  /**
+   * simple script that will be dynamically added in
+   *
+   * @class Dynascript1
+   * @param entity
+   * @constructor
+   */
+  var Dynascript1Component = function (entity) {
+    this.entity = entity;
+    this.name = 'Dynascript1';
+  };
 
-    function getScriptConfig(entity,name) {
-    }
+  Dynascript1Component.prototype = {
+
+    getConfig: function () {
+      var name = this.name;
+      var script = this.entity.script.data.scripts.find(function (el) {
+        return el.name === name;
+      });
+      if (script) {
+        return script.config;
+      }
+    },
+
     /**
-     * simple script that will be dynamically added in
-     *
-     * @class Dynascript1
-     * @param entity
-     * @constructor
+     * Called once after all resources are loaded and before the first update
+     * @method initialize
      */
-    var Dynascript1Component = function (entity) {
-        this.entity = entity;
-        this.name = 'Dynascript1';
-    };
+    initialize: function () {
+      console.log(this.getConfig());
+    },
 
-    Dynascript1Component.prototype = {
+    /**
+     * Called every frame
+     * @method update
+     * @param {number} delta The amount of time in seconds since last update
+     */
+    update: function (delta) {
 
-        getConfig: function() {
-            var scripts = this.entity.script.data.scripts;
-            for (var i = 0; i < scripts.length; i++) {
-                if (scripts[i].name == this.name) {
-                    return scripts[i].config;
-                }
-            }
-        },
+    }
+  };
 
-        /**
-         * Called once after all resources are loaded and before the first update
-         * @method initialize
-         */
-        initialize: function () {
-            console.log(this.getConfig());
-        },
-
-        /**
-         * Called every frame
-         * @method update
-         * @param {number} delta The amount of time in seconds since last update
-         */
-        update: function (delta) {
-
-        }
-    };
-
-    return Dynascript1Component;
+  return Dynascript1Component;
 });

@@ -1,4 +1,6 @@
 module.exports = function (grunt) {
+
+  var jsdirs = ['lander_ex/**/*.js', 'tutorial-1/**/*.js', 'isoshooter/**/*.js', 'common/**/*.js'];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     yuidoc: {
@@ -18,20 +20,20 @@ module.exports = function (grunt) {
       }
     },
     jshint: {
-      all: ['Gruntfile.js', '_fe/js/*.js'],
+      all: ['Gruntfile.js', '_fe/js/*.js'].concat(jsdirs),
       options: {
         jshintrc: '.jshintrc'
       }
     },
     jsbeautifier: {
       modify: {
-        src: ['Gruntfile.js', '_fe/js/**/*.js'],
+        src: ['Gruntfile.js', '_fe/js/**/*.js'].concat(jsdirs),
         options: {
           config: '.jsbeautifyrc'
         }
       },
       verify: {
-        src: ['Gruntfile.js', '_fe/js/**/*.js'],
+        src: ['Gruntfile.js', '_fe/js/**/*.js'].concat(jsdirs),
         options: {
           mode: 'VERIFY_ONLY',
           config: '.jsbeautifyrc'
