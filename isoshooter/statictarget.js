@@ -6,44 +6,43 @@
  */
 pc.script.create('statictarget', function (context) {
 
+  /**
+   * Description
+   *
+   * @class statictarget
+   * @param entity
+   * @constructor
+   */
+  var statictargetComponent = function (entity) {
+    this.entity = entity;
+  };
+
+  statictargetComponent.prototype = {
     /**
-     * Description
-     *
-     * @class statictarget
-     * @param entity
-     * @constructor
+     * Called once after all resources are loaded and before the first update
+     * @method initialize
      */
-    var statictargetComponent = function (entity) {
-        this.entity = entity;
-    };
+    initialize: function () {
+      this.entity.collision.on('contact', this.onContact, this);
+    },
 
-    statictargetComponent.prototype = {
-        /**
-         * Called once after all resources are loaded and before the first update
-         * @method initialize
-         */
-        initialize: function () {
-            this.entity.collision.on('contact', this.onContact, this);
-        },
+    /**
+     * @method onContact
+     */
+    onContact: function (result) {
+      console.log('hit by', result);
+      this.entity.destroy();
+    },
 
+    /**
+     * Called every frame
+     * @method update
+     * @param {number} delta The amount of time in seconds since last update
+     */
+    update: function (delta) {
 
-        /**
-         * @method onContact
-         */
-        onContact: function(result) {
-            console.log('hit by', result);
-            this.entity.destroy();
-        },
+    }
+  };
 
-        /**
-         * Called every frame
-         * @method update
-         * @param {number} delta The amount of time in seconds since last update
-         */
-        update: function (delta) {
-
-        }
-    };
-
-    return statictargetComponent;
+  return statictargetComponent;
 });
